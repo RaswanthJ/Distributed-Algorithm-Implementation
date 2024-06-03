@@ -56,7 +56,7 @@ def run_consensus(s,alpha,iter,x):
         
         for neighbor in neighbors[node_id]:
             if(neighbor_states[neighbor]==-1):
-                print("Prev value used:",neighbor_prev_states[-1][neighbor])
+                print("Prev state used: " ,neighbor_prev_states[-1][neighbor]," of neighbor:",neighbor)
                 neighbor_states[neighbor] = neighbor_prev_states[-1][neighbor]
         
         state_update = sum(neighbor_states[neighbor] - state for neighbor in neighbors[node_id])
