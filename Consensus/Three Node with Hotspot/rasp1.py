@@ -66,6 +66,8 @@ def run_consensus(s,alpha,iter,x):
         pd.DataFrame([[x, state]], columns=["Iteration", "State"]).to_csv(csv_file, mode='a', header=False, index=False)
         print(f"Node {node_id} Iteration {x}: State = {state}")
         # Sleep to synchronize with other nodes
+        if(x==1):
+            time.sleep(2)
         time.sleep(sleep_time)
         write_state(node_id,state)
         val_list.append(state)
