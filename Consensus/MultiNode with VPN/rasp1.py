@@ -65,6 +65,7 @@ def run_consensus(s,alpha,iter,x):
                 else:
                     validity[neighbor]=0
         #state_update = sum( neighbor_states[neighbor] - state for neighbor in neighbors[node_id])
+        state_updata = 0
         for neighbor in neighbors[node_id]:
             if validity[neighbor]==1:
                 state_update += (neighbor_states[neighbor] - state)
