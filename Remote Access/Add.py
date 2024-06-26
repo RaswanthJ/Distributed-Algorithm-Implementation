@@ -1,4 +1,20 @@
 import os
+import paramiko
+
+def send_file(file,ip,user,path):
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(ip,username=user,port=22)
+
+        sftp = ssh.open_sftp()
+        remote_path = os.path.join(path,os.path.basename(file))
+        sftp.put(file,remote_path)
+        sftp.close()
+        ssh.close()
+        print(f"File {file} successfully sent.")
+    except Exception as e:
+        print(f"File Transfer Failed due to {e}")
 
 a = 10
 b = 20
@@ -16,6 +32,6 @@ user = "rasp2"
 
 n_script = "n.txt"
 
-scp_command = f"scp -P {port} {n_script} {user}@{ip}:/home/{user}/Desktop/Remote Access Test/"
-print(f"Transferring {n_script} to {user}@{ip}...")
-os.system(scp_command)
+path = f"/home/{user}/Desktop/Remote Access Test/"
+
+send_file(n_script,ip,user,path)
