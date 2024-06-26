@@ -4,6 +4,22 @@ import time
 import json
 import matplotlib.pyplot as plt
 import os
+import paramiko
+
+def send_file(file,ip,user,path):
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(ip,username=user,port=22)
+
+        sftp = ssh.open_sftp()
+        remote_path = os.path.join(path,os.path.basename(file))
+        sftp.put(file,remote_path)
+        sftp.close()
+        ssh.close()
+        print(f"File {file} successfully sent.")
+    except Exception as e:
+        print(f"File Transfer Failed due to {e}")
 
 u_st = 0
 start_time = 0
@@ -15,8 +31,9 @@ port_num = 12345
 val_list = []
 neighbor_prev_states=[]
 sleep_time = 1
-local_ip = "127.0.0.1"
-coor_ip = ""
+local_ip = "169.254.142.206"     #------------------To be changed-----------------------
+user_name = "rasp2"
+coor_ip = "169.254.253.114"
 coor_port = 12345
 
 def print_time_taken(description, start_time):
@@ -90,17 +107,6 @@ def run_consensus(s,alpha,iter,x):
 def clear_csv(file_path):
     with open(file_path, 'w') as file:
         pass
-    
-def transfer_iterations():
-    ip = "127.0.0.1" #Coordinator ip
-    port = 22
-    user = "Rasp"  #Coordinator Username
-    node_script = f'node{node_id}_state.csv'
-    
-    # Transfer node script
-    scp_command = f"scp -P {port} {node_script} {user}@{ip}:/home/{user}/Consensus/"
-    print(f"Transferring {node_script} to {user}@{ip}...")
-    os.system(scp_command)
 
 if __name__ == "__main__":
     iterations = 50
@@ -147,6 +153,8 @@ if __name__ == "__main__":
                         message = f"{node_id},done"
                         s.sendto(message.encode('utf-8'), (coor_ip,coor_port))
                     
+                    path = f"/home/{user_name}/Desktop/Single_Pi_Control/"
+                    send_file(csv_file,coor_ip,user_name,path)
                     
                     
                     plt.plot(time_list, val_list , label='x(t)')
